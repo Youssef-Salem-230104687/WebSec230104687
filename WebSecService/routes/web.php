@@ -127,6 +127,7 @@ Route::post('questions/save/{question?}', [QuestionsController::class, 'save'])-
 Route::get('questions/delete/{question}', [QuestionsController::class, 'delete'])->name('questions_delete');
 Route::get('questions/exam', [QuestionsController::class, 'startExam'])->name('questions_exam');
 Route::post('questions/submit', [QuestionsController::class, 'submitExam'])->name('questions_submit');
+Route::get('questions/result', [QuestionsController::class, 'viewResult'])->name('questions_result');
 
 
 Route::get('grades', [GradesController::class, 'list'])->name('grades_list');

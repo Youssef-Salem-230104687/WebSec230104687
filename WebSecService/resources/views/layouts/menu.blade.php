@@ -60,6 +60,17 @@
     <a class="nav-link" href="./questions">MCQ Exam</a>
  </li>
 
+ <li class="nav-item">
+                <a class="nav-link" href="{{ route('questions_exam') }}">Start Exam</a>
+ </li>
+
+ @if(session('score'))
+ <li class="nav-item">
+    <a class="nav-link" href="{{ route('questions_result') }}">View Result</a>
+ </li>
+ @endif
+ 
+
     <!-- @auth
     <li class="nav-item"><a class="nav-link">{{auth()->user()->name}}</a></li>
 

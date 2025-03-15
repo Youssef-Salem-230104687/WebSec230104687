@@ -31,6 +31,7 @@
             </div>
         @endforeach
         <button type="submit" class="btn btn-primary">Submit Exam</button>
+        <a href="{{ route('questions_list') }}" class="btn btn-secondary">Back to MCQ Page</a>
     </form>
 </div>
 @endsection
