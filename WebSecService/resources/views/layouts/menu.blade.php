@@ -15,8 +15,8 @@
  <li class="nav-item">
  <a class="nav-link" href="./">Home</a>
  </li>
- <!-- 
- <li class="nav-item">
+ 
+ <!-- <li class="nav-item">
  <a class="nav-link" href="./even">Even Numbers</a>
  </li>
 
@@ -29,32 +29,28 @@
  </li> -->
 
  <!-- <li class="nav-item">
- <a class="nav-link" href="./bill"> bill page</a>
+ <a class="nav-link" href="./MiniTest"> MiniTest</a>
  </li>
 
  <li class="nav-item">
- <a class="nav-link" href="./Transcript"> Transcript page</a>
- </li> -->
-
- <!-- <li class="nav-item">
- <a class="nav-link" href="./Products"> Products page</a>
- </li> -->
-
- <!-- <li class="nav-item">
- <a class="nav-link" href="./Calculator"> Calculator page</a>
- </li> -->
+ <a class="nav-link" href="./Transcript">Transcript</a>
+ </li>
 
  <li class="nav-item">
+ <a class="nav-link" href="./Products"> Products Page</a>
+ </li> -->
+
+ <!-- <li class="nav-item">
+ <a class="nav-link" href="./Calculator">Calculator </a>
+ </li> -->
+
+ <!-- <li class="nav-item">
  <a class="nav-link" href="./products"> Products </a>
- </li>
+ </li> -->
 
  <li class="nav-item">
  <a class="nav-link" href="./users"> Users </a>
  </li>
-
- <!-- <li class="nav-item">
-                <a class="nav-link" href="/users">Users</a>
-            </li> -->
 
  <li class="nav-item">
     <a class="nav-link" href="./grades">Grades</a>
@@ -91,6 +87,8 @@
                     <a class="nav-link" href="{{ route('register') }}">Register</a>
                 </li>
             @endauth
+
+            
     
 </ul>
 

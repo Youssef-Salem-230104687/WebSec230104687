@@ -1,13 +1,11 @@
 @extends('layouts.master')
-
 @section('title', 'Users List')
-
 @section('content')
 <div class="container">
     <h1>Users List</h1>
 
     <!-- Add User Button (Only for Admin) -->
-    @if(Auth::user()->admin)
+    @if(Auth::user()->role === 'admin')
         <a href="{{ route('users_edit') }}" class="btn btn-success mb-3">Add User</a>
     @endif
 
@@ -57,12 +55,12 @@
                     <td>{{ $user->role }}</td>
                     <td>
                         <!-- Edit Button (Visible to Admin or the User Themselves) -->
-                        @if(Auth::user()->admin || Auth::id() === $user->id)
+                        @if(Auth::user()->role === 'admin' || Auth::id() === $user->id)
                             <a href="{{ route('users_edit', $user->id) }}" class="btn btn-primary">Edit</a>
                         @endif
 
                         <!-- Delete Button (Only for Admin) -->
-                        @if(Auth::user()->admin)
+                        @if(Auth::user()->role === 'admin')
                             <a href="{{ route('users_delete', $user->id) }}" class="btn btn-danger">Delete</a>
                         @endif
                     </td>

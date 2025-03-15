@@ -2,7 +2,7 @@
 @section('title', 'Register Page')
 @section('content')
 <form action="{{route('do_register')}}" method="post">
-  {{ csrf_field()}}
+  {{ csrf_field() }}
   
   <div class="form-group">
     @foreach($errors->all() as $error)

@@ -32,6 +32,15 @@ class GradesController extends Controller
 
     public function save(Request $request, Grade $grade = null)
     {
+
+        $request->validate([
+            'student_id' => 'required|integer',
+            'course_id' => 'required|integer',
+            'grade' => 'required|string|in:A,B,C,D,F',
+            'credit_hours' => 'required|numeric|min:1',
+            'term' => 'required|string',
+        ]);
+
         $grade = $grade ?? new Grade();
         $grade->fill($request->all());
         $grade->save();

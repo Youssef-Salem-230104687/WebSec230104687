@@ -40,7 +40,8 @@ Route::get('/prime', function () {
 });
 
 
-Route::get('/bill', function () {
+Route::get('/MiniTest', function () 
+{
     $bill = (object)[
         'supermarket' => "Carrefour",
         'pos' => "5691374",
@@ -50,11 +51,12 @@ Route::get('/bill', function () {
             (object)["name" => "Bread", "quantity" => 3, "unit" => "pieces", "price" => 1.2]
         ]
     ];
-    return view('bill', compact("bill"));
+    return view('MiniTest', compact("bill"));
 });
 
 
-Route::get('/Transcript', function () {
+Route::get('/Transcript', function () 
+{
     $transcript = [
         (object)["course" => "Mathematics", "grade" => "A"],
         (object)["course" => "Physics", "grade" => "B+"],
@@ -65,7 +67,8 @@ Route::get('/Transcript', function () {
     return view('Transcript', compact("transcript"));
 });
 
-Route::get('/Products', function () {
+Route::get('/Products', function () 
+{
     $products = [
         (object)[
             'name' => 'Apple iPhone 14',
@@ -95,8 +98,15 @@ Route::get('/Products', function () {
     return view('Products', compact("products"));
 });
 
-Route::get('/Calculator', function () {
-    return view('Calculator');
+Route::get('/Calculator', function () 
+{
+    $courses = [
+        ["code" => "CS101", "title" => "Introduction to Computer Science", "credit_hours" => 3],
+        ["code" => "MATH101", "title" => "Calculus I", "credit_hours" => 4],
+        ["code" => "PHYS101", "title" => "Physics I", "credit_hours" => 4],
+        ["code" => "ENG101", "title" => "English Composition", "credit_hours" => 3],
+    ];
+    return view('Calculator' , ['courses' => $courses]);
 });
 
 Route::get('products', [ProductsController::class, 'list'])->name('products_list');
