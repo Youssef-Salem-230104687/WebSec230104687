@@ -13,8 +13,8 @@
                     <h1>Products</h1>
             </div>
             <div class="col col-2">
-                @auth 
-                <a href="{{route('products_edit')}}" class="btn btn-success form-control">Add Product</a>
+                @auth
+                <a href= "{{route('products_edit')}}" class= "btn btn-success form-control"> Add Product </a>
                 @endauth    
 
             </div>
@@ -59,20 +59,28 @@
                     <div class="col col-sm-12 col-lg-4">
                         <img src="{{ asset('images/' . $product->photo) }}" class="img-thumbnail" alt="{{ $product->name }}" width="100%">
                     </div>
+                    
                     <div class="col col-sm-12 col-lg-8 mt-3">
-                    <div class="row mb-2">
-                        <div class="col-8">
-                            <h3>{{$product->name}}</h3>
-                        </div>
-                        <div class="col col-2">
-                            <a href="{{route('products_edit', $product->id)}}" 
-                                class="btn btn-success form-control">Edit</a>
-                        </div>
-                        <div class="col col-2">
-                            <a href="{{route('products_delete', $product->id)}}" 
-                                class="btn btn-danger form-control">Delete</a>
-                        </div>
-                        </div>    
+
+                        <div class="row mb-2">
+
+                            <div class="col-8">
+                                <h3>{{$product->name}}</h3>
+                            </div>
+
+                            <div class="col col-2">
+                                @auth
+                                    <a href="{{route('products_edit', $product->id)}}" class="btn btn-success form-control">Edit</a>
+                                @endauth
+                            </div>
+
+                            <div class="col col-2">
+                                @auth
+                                    <a href="{{route('products_delete', $product->id)}}" class="btn btn-danger form-control">Delete</a>
+                                @endauth
+                            </div>
+                        </div>  
+                          
 
                         <table class="table table-striped">
                             <tr>

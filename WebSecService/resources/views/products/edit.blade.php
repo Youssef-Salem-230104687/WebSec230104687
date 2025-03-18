@@ -5,9 +5,9 @@
     {{ csrf_field() }}
 
     @foreach($errors->all() as $error)
-    <div class="alert alert-danger">
-        <strong>Error!</strong>{{$error}}
-    </div>
+        <div class="alert alert-danger">
+            <strong>Error!</strong>{{$error}}
+        </div>
     @endforeach
 
     <div class="row mb-2">

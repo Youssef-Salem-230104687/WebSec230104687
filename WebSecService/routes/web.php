@@ -5,14 +5,18 @@ use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Web\QuestionsController;
 use App\Http\Controllers\Web\GradesController;
+use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Web\BookController;
+use App\Http\Controllers\Web\Controller;
 
-
-Route::get('/', function () {
+Route::get('/', function () 
+{
     return view('welcome');
 });
 
 // 1st way
-Route::get('/multable', function (Request $request) {
+Route::get('/multable', function (Request $request) 
+{
     $j = $request->number;
     $msg = $request->msg;
     // dd($j , $msg);
@@ -31,11 +35,13 @@ Route::get('/multable', function (Request $request) {
 //         return view('multable' , compact("j"));
 //     });
 
-Route::get('/even', function () {
+Route::get('/even', function () 
+{
     return view('even');
 });
 
-Route::get('/prime', function () {
+Route::get('/prime', function () 
+{
     return view('prime');
 });
 
@@ -145,3 +151,26 @@ Route::get('logout', [UsersController::class, 'doLogout'])->name('do_logout');
 // Profile routes
 Route::get('profile', [UsersController::class, 'profile'])->name('profile');
 Route::post('profile/update-password', [UsersController::class, 'updatePassword'])->name('profile.update_password');
+
+Route::get('/home', function () 
+{
+    return view('home');
+})->middleware(['auth', 'verified']);
+
+Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
+
+// Auth::routes();
+
+// // Protected routes for books
+// Route::middleware('auth')->group(function () {
+//     Route::resource('books', BookController::class)->only(['index', 'create', 'store']);
+// });
+
+// // Home route
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('books/create', [BookController::class, 'create'])->name('books.create');
+Route::get('books/index', [BookController::class, 'index'])->name('books.index');
+Route::post('books/store', [BookController::class, 'store'])->name('books.store');
