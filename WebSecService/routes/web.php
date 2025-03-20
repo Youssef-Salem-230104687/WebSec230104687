@@ -2,12 +2,16 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\ProductsController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Web\QuestionsController;
 use App\Http\Controllers\Web\GradesController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Web\BookController;
 use App\Http\Controllers\Web\Controller;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Web\HomeController;
 
 Route::get('/', function () 
 {
@@ -149,28 +153,50 @@ Route::get('logout', [UsersController::class, 'doLogout'])->name('do_logout');
 
 
 // Profile routes
-Route::get('profile', [UsersController::class, 'profile'])->name('profile');
-Route::post('profile/update-password', [UsersController::class, 'updatePassword'])->name('profile.update_password');
+// Route::get('profile', [UsersController::class, 'profile'])->name('profile');
 
-Route::get('/home', function () 
+
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/home');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/resend', [VerificationController::class, 'resend'])->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
+
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->name('password.request');
+
+Route::middleware(['auth', 'verified'])->group(function () 
 {
-    return view('home');
-})->middleware(['auth', 'verified']);
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('profile', [UsersController::class, 'profile'])->name('profile');
+    Route::post('profile/update-password', [UsersController::class, 'updatePassword'])->name('profile.update_password');
+    Route::get('books/create', [BookController::class, 'create'])->name('books.create');
+    Route::post('books/store', [BookController::class, 'store'])->name('books.store');
+    Route::get('books/create', [BookController::class, 'create'])->name('books.create');
+    Route::get('books/index', [BookController::class, 'index'])->name('books.index');
+});
 
-Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
-// Auth::routes();
 
-// // Protected routes for books
-// Route::middleware('auth')->group(function () {
-//     Route::resource('books', BookController::class)->only(['index', 'create', 'store']);
+
+
+// Route::get('/test-email', function () {
+//     Mail::raw('This is a test email', function ($message) {
+//         $message->to('recipient@example.com')->subject('Test Email');
+//     });
+//     return 'Email sent!';
 // });
 
-// // Home route
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 
-Route::get('books/create', [BookController::class, 'create'])->name('books.create');
-Route::get('books/index', [BookController::class, 'index'])->name('books.index');
-Route::post('books/store', [BookController::class, 'store'])->name('books.store');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', function ($token) {
+    return view('auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
+
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->middleware('guest')->name('password.update');

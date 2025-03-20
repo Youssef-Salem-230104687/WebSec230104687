@@ -16,7 +16,7 @@
  <a class="nav-link" href="./">Home</a>
  </li>
  
- <!-- <li class="nav-item">
+<!-- <li class="nav-item">
  <a class="nav-link" href="./even">Even Numbers</a>
  </li>
 
@@ -45,7 +45,7 @@
  </li> -->
 
  <li class="nav-item">
- <a class="nav-link" href="./products"> Products </a>
+    <a class="nav-link" href="./products"> Products </a>
  </li>
 
  <li class="nav-item">
@@ -61,65 +61,44 @@
  </li>
 
  <li class="nav-item">
-                <a class="nav-link" href="{{ route('questions_exam') }}">Start Exam</a>
+    <a class="nav-link" href="{{ route('questions_exam') }}">Start Exam</a>
  </li>
 
- @if(session('score'))
+@if(session('score'))
  <li class="nav-item">
     <a class="nav-link" href="{{ route('questions_result') }}">View Result</a>
  </li>
- @endif
+@endif
+@auth
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('profile') }}">{{ auth()->user()->name }}</a>
+    </li>
 
- 
- 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('do_logout') }}">Logout</a>
+    </li>
 
-    <!-- @auth
-    <li class="nav-item"><a class="nav-link">{{auth()->user()->name}}</a></li>
-
-    <li class="nav-item"><a class="nav-link" href="{{route('do_logout')}}">Logout</a></li>
-    @else
-    <li class="nav-item"><a class="nav-link" href="{{route('login')}}">Login</a></li>
-    <li class="nav-item"><a class="nav-link" href="{{route('register')}}">Register</a></li>
-    @endauth -->
-
-            @auth
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('profile') }}">{{ auth()->user()->name }}</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('do_logout') }}">Logout</a>
-                </li>
-
-                <li class="nav-item">
-                        <a class="nav-link" href="{{ route('books.create') }}">Add Book</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('books.index') }}">View Books</a>
-                    </li>
-
-            @else
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">Login</a>
-                </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('register') }}">Register</a>
-                </li>
-            @endauth
-
-
-
-            
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('books.create') }}">Add Book</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('books.index') }}">View Books</a>
+    </li>
+@else
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('login') }}">Login</a>
+    </li>
     
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('register') }}">Register</a>
+    </li>
+@endauth
+
 </ul>
-
-
 
 </div>
 
 </nav>
-
 
 </body>
 </html>
