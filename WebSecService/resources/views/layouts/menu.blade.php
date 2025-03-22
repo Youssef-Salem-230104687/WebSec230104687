@@ -44,23 +44,23 @@
  <a class="nav-link" href="./Calculator">Calculator </a>
  </li> -->
 
- <li class="nav-item">
+ <!-- <li class="nav-item">
     <a class="nav-link" href="./products"> Products </a>
  </li>
 
  <li class="nav-item">
- <a class="nav-link" href="./users"> Users </a>
- </li>
+ <a class="nav-link" href="{{route('users_list') }}"> Users </a>
+ </li> -->
 
- <li class="nav-item">
+ <!-- <li class="nav-item">
     <a class="nav-link" href="./grades">Grades</a>
  </li>
         
  <li class="nav-item">
     <a class="nav-link" href="./questions">MCQ Exam</a>
- </li>
+ </li> -->
 
- <li class="nav-item">
+ <!-- <li class="nav-item">
     <a class="nav-link" href="{{ route('questions_exam') }}">Start Exam</a>
  </li>
 
@@ -68,8 +68,36 @@
  <li class="nav-item">
     <a class="nav-link" href="{{ route('questions_result') }}">View Result</a>
  </li>
-@endif
+@endif -->
+
 @auth
+
+    <li class="nav-item">
+     <a class="nav-link" href="./products"> Products </a>
+    </li>
+
+    <li class="nav-item">
+     <a class="nav-link" href="{{route('users_list') }}"> Users </a>
+    </li>
+
+   <li class="nav-item">
+     <a class="nav-link" href="{{ route('questions_exam') }}">Start Exam</a>
+    </li>
+
+    @if(session('score'))
+    <li class="nav-item">
+       <a class="nav-link" href="{{ route('questions_result') }}">View Result</a>
+    </li>
+    @endif    
+ 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('grades_list') }}">Grades</a>
+    </li>
+        
+    <li class="nav-item">
+       <a class="nav-link" href="{{ route('questions_list') }}">MCQ Exam</a>
+    </li>
+
     <li class="nav-item">
         <a class="nav-link" href="{{ route('profile') }}">{{ auth()->user()->name }}</a>
     </li>
@@ -81,6 +109,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ route('books.create') }}">Add Book</a>
     </li>
+    
     <li class="nav-item">
         <a class="nav-link" href="{{ route('books.index') }}">View Books</a>
     </li>

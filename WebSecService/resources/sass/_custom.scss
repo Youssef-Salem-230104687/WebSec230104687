@@ -1,0 +1,38 @@
+// Variables
+$primary-color: #3498db;
+$secondary-color: #2ecc71;
+$font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+// Mixins
+@mixin border-radius($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    border-radius: $radius;
+}
+
+// Base styles
+body {
+    font-family: $font-stack;
+    color: $primary-color;
+}
+
+a {
+    color: $secondary-color;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+// Example component
+.button {
+    background-color: $primary-color;
+    color: #fff;
+    padding: 10px 20px;
+    @include border-radius(5px);
+
+    &:hover {
+        background-color: darken($primary-color, 10%);
+    }
+}

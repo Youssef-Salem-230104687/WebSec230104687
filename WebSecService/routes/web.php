@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\ProductsController;
@@ -13,45 +14,27 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Web\HomeController;
 
-Route::get('/', function () 
-{
+// Public routes
+Route::get('/', function () {
     return view('welcome');
 });
 
-// 1st way
-Route::get('/multable', function (Request $request) 
-{
+// Example routes (can be removed if not needed)
+Route::get('/multable', function (Request $request) {
     $j = $request->number;
     $msg = $request->msg;
-    // dd($j , $msg);
-    return view('multable' , compact("j" , "msg"));
+    return view('multable', compact("j", "msg"));
 });
 
-// 2nd way
-// Route::get('/multable/{number?}', function ($number = 9) {
-//     $j = $number;
-//     return view('multable' , compact("j"));
-// });
-
-// 3rd way
-// Route::get('/multable/{number?}', function ($number = null) {
-//         $j = $number??2;
-//         return view('multable' , compact("j"));
-//     });
-
-Route::get('/even', function () 
-{
+Route::get('/even', function () {
     return view('even');
 });
 
-Route::get('/prime', function () 
-{
+Route::get('/prime', function () {
     return view('prime');
 });
 
-
-Route::get('/MiniTest', function () 
-{
+Route::get('/MiniTest', function () {
     $bill = (object)[
         'supermarket' => "Carrefour",
         'pos' => "5691374",
@@ -64,9 +47,7 @@ Route::get('/MiniTest', function ()
     return view('MiniTest', compact("bill"));
 });
 
-
-Route::get('/Transcript', function () 
-{
+Route::get('/Transcript', function () {
     $transcript = [
         (object)["course" => "Mathematics", "grade" => "A"],
         (object)["course" => "Physics", "grade" => "B+"],
@@ -77,8 +58,7 @@ Route::get('/Transcript', function ()
     return view('Transcript', compact("transcript"));
 });
 
-Route::get('/Products', function () 
-{
+Route::get('/Products', function () {
     $products = [
         (object)[
             'name' => 'Apple iPhone 14',
@@ -108,95 +88,104 @@ Route::get('/Products', function ()
     return view('Products', compact("products"));
 });
 
-Route::get('/Calculator', function () 
-{
+Route::get('/Calculator', function () {
     $courses = [
         ["code" => "CS101", "title" => "Introduction to Computer Science", "credit_hours" => 3],
         ["code" => "MATH101", "title" => "Calculus I", "credit_hours" => 4],
         ["code" => "PHYS101", "title" => "Physics I", "credit_hours" => 4],
         ["code" => "ENG101", "title" => "English Composition", "credit_hours" => 3],
     ];
-    return view('Calculator' , ['courses' => $courses]);
+    return view('Calculator', ['courses' => $courses]);
 });
 
+// Product routes
 Route::get('products', [ProductsController::class, 'list'])->name('products_list');
 Route::get('products/edit/{product?}', [ProductsController::class, 'edit'])->name('products_edit');
 Route::post('products/save/{product?}', [ProductsController::class, 'save'])->name('products_save');
 Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
 
+// User routes
 Route::get('users', [UsersController::class, 'list'])->name('users_list');
 Route::get('users/edit/{user?}', [UsersController::class, 'edit'])->name('users_edit');
 Route::post('users/save/{user?}', [UsersController::class, 'save'])->name('users_save');
 Route::get('users/delete/{user}', [UsersController::class, 'delete'])->name('users_delete');
 
-
-// MCQ Exam Routes
+// MCQ Exam routes
 Route::get('questions', [QuestionsController::class, 'list'])->name('questions_list');
 Route::get('questions/edit/{question?}', [QuestionsController::class, 'edit'])->name('questions_edit');
 Route::post('questions/save/{question?}', [QuestionsController::class, 'save'])->name('questions_save');
 Route::get('questions/delete/{question}', [QuestionsController::class, 'delete'])->name('questions_delete');
-Route::get('questions/exam', [QuestionsController::class, 'startExam'])->name('questions_exam');
 Route::post('questions/submit', [QuestionsController::class, 'submitExam'])->name('questions_submit');
 Route::get('questions/result', [QuestionsController::class, 'viewResult'])->name('questions_result');
 
-
+// Grade routes
 Route::get('grades', [GradesController::class, 'list'])->name('grades_list');
 Route::get('grades/edit/{grade?}', [GradesController::class, 'edit'])->name('grades_edit');
 Route::post('grades/save/{grade?}', [GradesController::class, 'save'])->name('grades_save');
 Route::get('grades/delete/{grade}', [GradesController::class, 'delete'])->name('grades_delete');
 
-Route::get('register', [UsersController::class, 'register'])->name('register');
-Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
-Route::get('login', [UsersController::class, 'login'])->name('login');
-Route::post('login', [UsersController::class, 'doLogin'])->name('do_login');
-Route::get('logout', [UsersController::class, 'doLogout'])->name('do_logout');
+// Authentication routes
+Route::middleware('guest')->group(function () {
+    Route::get('register', [UsersController::class, 'register'])->name('register');
+    Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
+    Route::get('login', [UsersController::class, 'login'])->name('login');
+    Route::post('login', [UsersController::class, 'doLogin'])->name('do_login');
+});
+
+// Authenticated routes
+Route::middleware('auth')->group(function () {
+    Route::get('logout', [UsersController::class, 'doLogout'])->name('do_logout');
 
 
-// Profile routes
-// Route::get('profile', [UsersController::class, 'profile'])->name('profile');
+    // Verification code routes
+    Route::get('verification/code', function () {
+        return view('auth.verification_code_form');
+    })->name('verification.code.form');
+
+    Route::post('verification/code', [UsersController::class, 'verifyCode'])->name('verification.code.submit');
+    Route::post('verification/resend', [UsersController::class, 'resendCode'])->name('verification.resend');
 
 
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
+    // Mobile Verification Routes
+    Route::get('mobile/verification', function () {
+        return view('auth.mobile_verification_form');
+    })->name('mobile.verification.form');
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect('/home');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+    Route::post('mobile/verification', [UsersController::class, 'verifyMobileCode'])->name('mobile.verification.submit');
 
-Route::post('/email/resend', [VerificationController::class, 'resend'])->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
+    Route::post('mobile/verification/resend', [UsersController::class, 'resendMobileCode'])->name('mobile.verification.resend');
+});
 
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name('password.request');
-
-Route::middleware(['auth', 'verified'])->group(function () 
-{
+// Verified routes (require email verification)
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('profile', [UsersController::class, 'profile'])->name('profile');
+    Route::get('profile/{user?}', [UsersController::class, 'profile'])->name('profile');
     Route::post('profile/update-password', [UsersController::class, 'updatePassword'])->name('profile.update_password');
     Route::get('books/create', [BookController::class, 'create'])->name('books.create');
     Route::post('books/store', [BookController::class, 'store'])->name('books.store');
-    Route::get('books/create', [BookController::class, 'create'])->name('books.create');
     Route::get('books/index', [BookController::class, 'index'])->name('books.index');
+    Route::get('questions/exam', [QuestionsController::class, 'startExam'])->name('questions_exam');
 });
 
+// Password reset routes
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->middleware('guest')->name('password.request');
 
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->middleware('guest')->name('password.email');
 
-
-
-// Route::get('/test-email', function () {
-//     Mail::raw('This is a test email', function ($message) {
-//         $message->to('recipient@example.com')->subject('Test Email');
-//     });
-//     return 'Email sent!';
-// });
-
-
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('/reset-password/{token}', function ($token) {
     return view('auth.reset-password', ['token' => $token]);
 })->middleware('guest')->name('password.reset');
 
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->middleware('guest')->name('password.update');
+
+
+Route::get('/get-security-question', function (Request $request) {
+    $email = $request->query('email');
+    $user = \App\Models\User::where('email', $email)->first();
+
+    return response()->json([
+        'security_question' => $user ? $user->security_question : null,
+    ]);
+});

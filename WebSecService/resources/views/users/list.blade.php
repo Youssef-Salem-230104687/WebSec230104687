@@ -36,6 +36,7 @@
     </form>
 
     <!-- Users Table -->
+    @can('show_users')
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -68,5 +69,6 @@
             @endforeach
         </tbody>
     </table>
+    @endcan
 </div>
 @endsection

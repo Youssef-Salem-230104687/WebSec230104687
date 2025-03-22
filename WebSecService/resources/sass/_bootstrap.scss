@@ -1,0 +1,30 @@
+// Import Bootstrap's SCSS files
+@import "~bootstrap/scss/bootstrap";
+
+// You can add custom Bootstrap overrides and variables here
+$primary: #007bff;
+$secondary: #6c757d;
+$success: #28a745;
+$info: #17a2b8;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #343a40;
+
+// Custom styles
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.navbar-custom {
+    background-color: $primary;
+    .navbar-brand {
+        color: $light;
+    }
+    .nav-link {
+        color: $light;
+        &:hover {
+            color: $secondary;
+        }
+    }
+}
