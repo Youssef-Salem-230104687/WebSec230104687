@@ -107,7 +107,7 @@ Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->
 // User routes
 Route::get('users', [UsersController::class, 'list'])->name('users_list');
 Route::get('users/edit/{user?}', [UsersController::class, 'edit'])->name('users_edit');
-Route::post('users/save/{user?}', [UsersController::class, 'save'])->name('users_save');
+Route::match( ['post' , 'put'], 'users/save/{user}', [UsersController::class, 'save'])->name('users_save');
 Route::get('users/delete/{user}', [UsersController::class, 'delete'])->name('users_delete');
 
 // MCQ Exam routes

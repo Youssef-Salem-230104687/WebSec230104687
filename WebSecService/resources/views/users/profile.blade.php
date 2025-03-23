@@ -2,7 +2,7 @@
 @section('title', 'User Profile')
 @section('content')
 <div class="container">
-    <h1>Profile</h1>
+    <h1>Profile Content</h1>
 
     <div class="form-group">
        @foreach($errors->all() as $error)
@@ -14,6 +14,7 @@
 
 
     <!-- Display user information -->
+
     <!-- <div class="card mb-4">
         <div class="card-body">
             <h5 class="card-title">User Information</h5>
@@ -25,7 +26,9 @@
     </div> -->
 
     <div class="d-flex justify-content-center">
-    <div class="m-5 col-sm-9 col-md-10">
+
+    <div class="m-1 col-sm-10 col-md-8 col-lg-10">
+
         <table class="table table-striped">
             <tr>
                 <th>Name</th><td>{{$user->name}}</td>
@@ -57,6 +60,15 @@
       </div>
     </div>
 
+    <div class="row">
+        <div class="col col-10">
+        </div>
+            <div class="col col-2">
+                @if(auth()->user()->hasPermissionTo('edit_users')||auth()->id()==$user->id)
+                    <a href="{{route('users_edit')}}" class="btn btn-success form-control">Edit</a>
+                @endif
+            </div>
+    </div>
     <!-- Change password form -->
     <div class="card">
         <div class="card-body">
