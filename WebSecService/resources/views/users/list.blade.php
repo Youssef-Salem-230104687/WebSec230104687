@@ -2,9 +2,21 @@
 @section('title', 'Users List')
 @section('content')
 <div class="container">
+
+    <!-- Debug Information: -->
+    <!-- @if(auth()->check())
+        <div class="alert alert-info">
+            <h4>Debug Information:</h4>
+            <p>User ID: {{ auth()->id() }}</p>
+            <p>User Name: {{ auth()->user()->name }}</p>
+            <p>Has delete_users permission: {{ auth()->user()->can('delete_users') ? 'Yes' : 'No' }}</p>
+            <p>All Permissions: {{ auth()->user()->getAllPermissions()->pluck('name') }}</p>
+        </div>
+    @endif -->
+
     <h1>Users List</h1>
 
-    <!-- Add User Button (Only for users with edit_users permission) -->
+    
     @can('edit_users')
         <a href="{{ route('users_edit') }}" class="btn btn-success mb-3">Add User</a>
     @endcan

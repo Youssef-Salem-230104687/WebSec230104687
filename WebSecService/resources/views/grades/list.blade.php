@@ -35,7 +35,9 @@
                                 <td>{{ $grade->grade }}</td>
                                 <td>{{ $grade->credit_hours }}</td>
                                 <td>
+                                    @can('edit_grades')
                                     <a href="{{ route('grades_edit', $grade->id) }}" class="btn btn-primary">Edit</a>
+                                    @endcan
                                     <form action="{{ route('grades_delete', $grade->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')

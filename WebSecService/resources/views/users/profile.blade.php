@@ -12,7 +12,6 @@
        @endforeach
     </div>
 
-
     <!-- Display user information -->
 
     <!-- <div class="card mb-4">
@@ -64,9 +63,9 @@
         <div class="col col-10">
         </div>
             <div class="col col-2">
-                @if(auth()->user()->hasPermissionTo('edit_users')||auth()->id()==$user->id)
+                @can('edit_users')
                     <a href="{{route('users_edit')}}" class="btn btn-success form-control">Edit</a>
-                @endif
+                @endcan
             </div>
     </div>
     <!-- Change password form -->

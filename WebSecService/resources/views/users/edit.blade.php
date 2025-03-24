@@ -43,7 +43,7 @@
 
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}" required readonly>
+                <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}" required>
                 @error('name')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -51,7 +51,7 @@
 
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" required readonly>
+                <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" required>
                 @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -110,7 +110,8 @@ function updateUserDetails(userId) {
     if (option) {
         document.getElementById('name').value = option.dataset.name;
         document.getElementById('email').value = option.dataset.email;
-        window.location.href = '{{ route("users_edit") }}/' + userId;
+        // Redirect to the edit page for the selected user
+        window.location.href = '{{ url("users/edit") }}/' + userId;
     }
 }
 </script>

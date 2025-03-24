@@ -26,7 +26,7 @@ class UsersController extends Controller
     use ValidatesRequests;
     
     
-    public function list(Request $request)
+public function list(Request $request)
 {
     // Authorization check
     if (!auth()->user()->can('show_users')) {
@@ -89,7 +89,7 @@ public function edit(Request $request, User $user = null)
     return view('users.edit', compact('user', 'roles', 'permissions', 'allUsers'));
 }
 
-    public function save(Request $request, User $user = null) 
+public function save(Request $request, User $user = null) 
 {
     try 
     {
@@ -142,15 +142,24 @@ public function edit(Request $request, User $user = null)
 public function delete(Request $request, User $user) 
 {
     // Only admin can delete users
-    if (Auth::user()->role === 'admin') {
+    // if (Auth::user()->role === 'admin') {
+    //     $user->delete();
+    //     return redirect()->route('users_list');
+    // }
+
+    if(auth()->user()->hasPermissionTo('delete_users')) {
         $user->delete();
         return redirect()->route('users_list');
     }
+    else {
+        abort(403);
+    }
+
     return redirect()->route('home')->with('error', 'You do not have permission to delete this user.');
 }
 
 
-    public function register(Request $request) 
+public function register(Request $request) 
 {
         return view('users.register');
 }
@@ -194,7 +203,7 @@ public function doRegister(Request $request)
 public function login(Request $request) 
 {
         return view('users.login');
-    }
+}
 
 
 public function doLogin(Request $request) 
@@ -207,7 +216,7 @@ public function doLogin(Request $request)
          $user = User::where('email', $request->email)->first();
          Auth::setUser($user);
         return redirect('/')->with('success' , 'Login Successful!');
-    }
+}
    
 
 
@@ -215,30 +224,33 @@ public function doLogout(Request $request)
 {
         Auth::logout();
         return redirect('/');
-    }
+}
+
 
 public function profile(Request $request, User $user = null) 
 {
 
-    $user = $user??auth()->user();
-    if (auth()->id() != $user->id && !auth()->user()->hasPermissionTo('show_users')) {
-        abort(401, 'Unauthorized');
-    }
+        $user = $user??auth()->user();
 
-    $permissions = [];
+        if (auth()->id() != $user->id && !auth()->user()->hasPermissionTo('show_users')) {
+            abort(401, 'Unauthorized');
+        }
 
-    foreach($user->permissions as $permission) {
-        $permissions[] = $permission;
-    }
+        $permissions = [];
 
-    foreach($user->roles as $role) {
-        foreach($role->permissions as $permission) {
+        foreach($user->permissions as $permission) {
             $permissions[] = $permission;
         }
-    }
-    return view('users.profile', compact('user' , 'permissions'));
-    }
-  
+
+        foreach($user->roles as $role) {
+            foreach($role->permissions as $permission) {
+                $permissions[] = $permission;
+            }
+        }
+        return view('users.profile', compact('user' , 'permissions'));
+}
+    
+
 public function updatePassword(Request $request)
 {
              // Validate the request
@@ -262,7 +274,9 @@ public function updatePassword(Request $request)
 
         // Redirect back with a success message
         return redirect()->back()->with('success', 'Password updated successfully!');
-    }
+    
+}
+
 
 public function verifyCode(Request $request)
 {
@@ -290,9 +304,10 @@ public function verifyCode(Request $request)
     }
 
     return back()->withErrors(['code' => 'Invalid or expired verification code.']);
-    }
+}
 
- // Verify email using link
+
+// Verify email using link
 public function verifyLink($token)
 {
      // Find the user by verification token
@@ -307,10 +322,11 @@ public function verifyLink($token)
      }
 
      return redirect()->route('home')->with('error', 'Invalid or expired verification link.');
-    }
+}
 
 
-public function resendCode(Request $request)
+
+    public function resendCode(Request $request)
 {
     // Ensure the user is authenticated
     if (!Auth::check()) {
@@ -329,7 +345,7 @@ public function resendCode(Request $request)
     Mail::to($user->email)->send(new VerificationCodeMail($user->verification_code));
 
     return back()->with('success', 'A new verification code has been sent to your email.');
-    }
+}
 
 
 }

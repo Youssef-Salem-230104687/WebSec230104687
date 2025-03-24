@@ -78,7 +78,7 @@
                             </div>
 
                             <div class="col col-2">
-                                @can('edit_products')
+                                @can('delete_products')
                                 @auth
                                     <a href="{{route('products_delete', $product->id)}}" class="btn btn-danger form-control">Delete</a>
                                 @endauth

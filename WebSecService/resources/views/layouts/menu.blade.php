@@ -16,7 +16,7 @@
  <a class="nav-link" href="./">Home</a>
  </li>
  
-<!-- <li class="nav-item">
+    <!-- <li class="nav-item">
  <a class="nav-link" href="./even">Even Numbers</a>
  </li>
 
@@ -64,13 +64,13 @@
     <a class="nav-link" href="{{ route('questions_exam') }}">Start Exam</a>
  </li>
 
-@if(session('score'))
- <li class="nav-item">
-    <a class="nav-link" href="{{ route('questions_result') }}">View Result</a>
- </li>
-@endif -->
+    @if(session('score'))
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('questions_result') }}">View Result</a>
+    </li>
+    @endif -->
 
-@auth
+    @auth
 
     <li class="nav-item">
      <a class="nav-link" href="{{ route('products_list')}}"> Products </a>
@@ -113,7 +113,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ route('books.index') }}">View Books</a>
     </li>
-@else
+    @else
     <li class="nav-item">
         <a class="nav-link" href="{{ route('login') }}">Login</a>
     </li>
@@ -121,7 +121,13 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ route('register') }}">Register</a>
     </li>
-@endauth
+    @endauth
+
+    @can('manage_roles')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('roles_list') }}">Roles Management</a>
+            </li>
+    @endcan
 
 </ul>
 
