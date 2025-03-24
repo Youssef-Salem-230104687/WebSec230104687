@@ -8,32 +8,63 @@ use App\Http\Controllers\Web\GradesController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Web\BookController;
 use App\Http\Controllers\Web\Controller;
+use App\Http\Controllers\Web\PermissionsController;
+use App\Http\Controllers\Web\RolesController;
 
 Route::get('/', function () 
 {
     return view('welcome');
-});
+})->name('home');
 
-// 1st way
-Route::get('/multable', function (Request $request) 
-{
-    $j = $request->number;
-    $msg = $request->msg;
-    // dd($j , $msg);
-    return view('multable' , compact("j" , "msg"));
-});
+// User routes
+Route::get('users', [UsersController::class, 'list'])->name('users_list');
+Route::get('users/edit/{user?}', [UsersController::class, 'edit'])->name('users_edit');
+Route::post('users/save/{user?}', [UsersController::class, 'save'])->name('users_save');
+Route::delete('users/delete/{user}', [UsersController::class, 'delete'])->name('users_delete');
+Route::get('users/customers', [UsersController::class, 'customers'])->name('users_customers');
+Route::post('users/add-credit/{user}', [UsersController::class, 'addCredit'])->name('users_add_credit');
+Route::get('users/purchases', [UsersController::class, 'purchases'])->name('users_purchases');
+Route::get('profile', [UsersController::class, 'profile'])->name('profile');
 
-// 2nd way
-// Route::get('/multable/{number?}', function ($number = 9) {
-//     $j = $number;
-//     return view('multable' , compact("j"));
-// });
+// Product routes
+Route::get('products', [ProductsController::class, 'list'])->name('products_list');
+Route::get('products/edit/{product?}', [ProductsController::class, 'edit'])->name('products_edit');
+Route::post('products/save/{product?}', [ProductsController::class, 'save'])->name('products_save');
+Route::delete('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
+Route::post('products/purchase/{product}', [ProductsController::class, 'purchase'])->name('products_purchase');
 
-// 3rd way
-// Route::get('/multable/{number?}', function ($number = null) {
-//         $j = $number??2;
-//         return view('multable' , compact("j"));
-//     });
+// Role routes
+Route::get('/roles', [RolesController::class, 'list'])->name('roles_list');
+Route::get('/roles/edit/{role?}', [RolesController::class, 'edit'])->name('roles_edit');
+Route::match(['post', 'put'], '/roles/save/{role?]', [RolesController::class, 'save'])->name('roles_save');
+Route::delete('/roles/delete/{role}', [RolesController::class, 'delete'])->name('roles_delete');
+
+// Permission routes
+Route::get('/permissions', [PermissionsController::class, 'list'])->name('permissions_list');
+Route::get('/permissions/edit/{permission?}', [PermissionsController::class, 'edit'])->name('permissions_edit');
+Route::match(['post', 'put'], '/permissions/save/{permission?]', [PermissionsController::class, 'save'])->name('permissions_save');
+Route::delete('/permissions/delete/{permission}', [PermissionsController::class, 'delete'])->name('permissions_delete');
+
+// MCQ Exam routes
+Route::get('questions', [QuestionsController::class, 'list'])->name('questions_list');
+Route::get('questions/edit/{question?}', [QuestionsController::class, 'edit'])->name('questions_edit');
+Route::post('questions/save/{question?}', [QuestionsController::class, 'save'])->name('questions_save');
+Route::get('questions/delete/{question}', [QuestionsController::class, 'delete'])->name('questions_delete');
+Route::get('questions/exam', [QuestionsController::class, 'startExam'])->name('questions_exam');
+Route::post('questions/submit', [QuestionsController::class, 'submitExam'])->name('questions_submit');
+Route::get('questions/result', [QuestionsController::class, 'viewResult'])->name('questions_result');
+
+// Book routes
+Route::get('books', [BookController::class, 'index'])->name('books.index');
+Route::get('books/create', [BookController::class, 'create'])->name('books.create');
+Route::post('books', [BookController::class, 'store'])->name('books.store');
+
+// Authentication routes
+Route::get('login', [UsersController::class, 'login'])->name('login');
+Route::post('login', [UsersController::class, 'doLogin'])->name('do_login');
+Route::get('logout', [UsersController::class, 'doLogout'])->name('do_logout');
+Route::get('register', [UsersController::class, 'register'])->name('register');
+Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
 
 Route::get('/even', function () 
 {
@@ -115,42 +146,10 @@ Route::get('/Calculator', function ()
     return view('Calculator' , ['courses' => $courses]);
 });
 
-Route::get('products', [ProductsController::class, 'list'])->name('products_list');
-Route::get('products/edit/{product?}', [ProductsController::class, 'edit'])->name('products_edit');
-Route::post('products/save/{product?}', [ProductsController::class, 'save'])->name('products_save');
-Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
-
-Route::get('users', [UsersController::class, 'list'])->name('users_list');
-Route::get('users/edit/{user?}', [UsersController::class, 'edit'])->name('users_edit');
-Route::post('users/save/{user?}', [UsersController::class, 'save'])->name('users_save');
-Route::get('users/delete/{user}', [UsersController::class, 'delete'])->name('users_delete');
-
-
-// MCQ Exam Routes
-Route::get('questions', [QuestionsController::class, 'list'])->name('questions_list');
-Route::get('questions/edit/{question?}', [QuestionsController::class, 'edit'])->name('questions_edit');
-Route::post('questions/save/{question?}', [QuestionsController::class, 'save'])->name('questions_save');
-Route::get('questions/delete/{question}', [QuestionsController::class, 'delete'])->name('questions_delete');
-Route::get('questions/exam', [QuestionsController::class, 'startExam'])->name('questions_exam');
-Route::post('questions/submit', [QuestionsController::class, 'submitExam'])->name('questions_submit');
-Route::get('questions/result', [QuestionsController::class, 'viewResult'])->name('questions_result');
-
-
 Route::get('grades', [GradesController::class, 'list'])->name('grades_list');
 Route::get('grades/edit/{grade?}', [GradesController::class, 'edit'])->name('grades_edit');
 Route::post('grades/save/{grade?}', [GradesController::class, 'save'])->name('grades_save');
 Route::get('grades/delete/{grade}', [GradesController::class, 'delete'])->name('grades_delete');
-
-Route::get('register', [UsersController::class, 'register'])->name('register');
-Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
-Route::get('login', [UsersController::class, 'login'])->name('login');
-Route::post('login', [UsersController::class, 'doLogin'])->name('do_login');
-Route::get('logout', [UsersController::class, 'doLogout'])->name('do_logout');
-
-
-// Profile routes
-Route::get('profile', [UsersController::class, 'profile'])->name('profile');
-Route::post('profile/update-password', [UsersController::class, 'updatePassword'])->name('profile.update_password');
 
 Route::get('/home', function () 
 {
@@ -158,19 +157,3 @@ Route::get('/home', function ()
 })->middleware(['auth', 'verified']);
 
 Route::post('/email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
-
-// Auth::routes();
-
-// // Protected routes for books
-// Route::middleware('auth')->group(function () {
-//     Route::resource('books', BookController::class)->only(['index', 'create', 'store']);
-// });
-
-// // Home route
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-Route::get('books/create', [BookController::class, 'create'])->name('books.create');
-Route::get('books/index', [BookController::class, 'index'])->name('books.index');
-Route::post('books/store', [BookController::class, 'store'])->name('books.store');

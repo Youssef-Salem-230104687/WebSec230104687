@@ -12,21 +12,18 @@
     @endforeach
   </div>
 
-
-    <!-- Display user information -->
     <div class="card mb-4">
         <div class="card-body">
             <h5 class="card-title">User Information</h5>
             <p class="card-text"><strong>Name:</strong> {{ $user->name }}</p>
             <p class="card-text"><strong>Email:</strong> {{ $user->email }}</p>
+            <p class="card-text"><strong>Credit:</strong> ${{ $user->credit }}</p>
         </div>
     </div>
 
-    <!-- Change password form -->
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Change Password</h5>
-
             <form action="{{ route('profile.update_password') }}" method="post">
             @csrf
             <div class="form-group mb-2">
@@ -41,9 +38,8 @@
                 <label for="new_password_confirmation">Confirm New Password:</label>
                 <input type="password" class="form-control" name="new_password_confirmation" required>
             </div>
-                    <button type="submit" class="btn btn-primary">Update Password</button>
+            <button type="submit" class="btn btn-primary">Update Password</button>
             </form>
-
         </div>
     </div>
 </div>

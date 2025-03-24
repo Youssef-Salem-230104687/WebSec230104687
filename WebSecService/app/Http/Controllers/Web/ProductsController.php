@@ -11,7 +11,8 @@ class ProductsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:web')->except('list');
+        $this->middleware('auth');
+        $this->middleware('role:employee')->except('list');
     }
 
     // Basic list method to fetch all products
@@ -57,36 +58,67 @@ class ProductsController extends Controller
         return view("products.list", compact('products'));
     }
 
-    public function edit(Request $request, Product $product = null) 
+    public function edit(Request $request, Product $product = null)
     {
-        if(!auth()->check()) return redirect()->route('login'); 
-
-        $product = $product??new Product();
+        $product = $product ?? new Product();
         return view("products.edit", compact('product'));
-    
     }
 
-    public function save(Request $request, Product $product = null) 
+    public function save(Request $request, Product $product = null)
     {
-
         $this->validate($request, [
             'code' => ['required', 'string', 'max:32'],
             'name' => ['required', 'string', 'max:128'],
             'model' => ['required', 'string', 'max:256'],
             'description' => ['required', 'string', 'max:1024'],
             'price' => ['required', 'numeric'],
+            'stock' => ['required', 'integer'],
         ]);
 
-        $product = $product??new Product();
+        $product = $product ?? new Product();
         $product->fill($request->all());
         $product->save();
 
-        return redirect()->route('products_list');
+        return redirect()->route('products_list')->with('success', 'Product saved successfully.');
     }
 
-    public function delete(Request $request, Product $product) 
+    public function delete(Request $request, Product $product)
     {
         $product->delete();
-        return redirect()->route('products_list');
+        return redirect()->route('products_list')->with('success', 'Product deleted successfully.');
+    }
+
+    public function purchase(Request $request, Product $product)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'You must be logged in to purchase products.');
+        }
+
+        if ($user->credit < $product->price) {
+            return redirect()->back()->with('error', 'You do not have enough credit to purchase this product.');
+        }
+
+        if ($product->stock < 1) {
+            return redirect()->back()->with('error', 'This product is out of stock.');
+        }
+
+        // Deduct the product price from user's credit
+        $user->credit -= $product->price;
+        $user->save();
+
+        // Reduce the product stock
+        $product->stock -= 1;
+        $product->save();
+
+        // Record the purchase (assuming you have a Purchase model)
+        Purchase::create([
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+            'price' => $product->price,
+        ]);
+
+        return redirect()->route('products_list')->with('success', 'Product purchased successfully!');
     }
 }

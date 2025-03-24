@@ -14,69 +14,65 @@ use Illuminate\Support\Facades\Hash;
 class UsersController extends Controller
 {
     use ValidatesRequests;
+
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['login', 'doLogin', 'register', 'doRegister']);
+    }
     
     public function list(Request $request)
     {
-    // Start the query
-    $query = User::query();
+        // Add check for auth user
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
 
-    // Filter by name
-    if ($request->has('name')) {
-        $query->where('name', 'like', '%' . $request->input('name') . '%');
-    }
+        $query = User::query();
 
-    // Filter by email
-    if ($request->has('email')) {
-        $query->where('email', 'like', '%' . $request->input('email') . '%');
-    }
+        // Only show users list if user has permission or is admin
+        if (auth()->user()->hasRole('admin') || auth()->user()->can('show_users')) {
+            $users = $query->with('roles')->get();
+        } else {
+            // User can only see their own profile
+            $users = $query->where('id', auth()->id())->with('roles')->get();
+        }
 
-    // Filter by role
-    if ($request->has('role')) {
-        $query->where('role', $request->input('role'));
-    }
-
-    // Check if the authenticated user is an admin
-    if (Auth::user()->role === 'admin') {
-        // Admin can view all users
-        $users = $query->get();
-    } else {
-        // Non-admin users can only view their own profile
-        $users = $query->where('id', Auth::id())->get();
-    }
-
-    // Pass the filters to the view
-    $filters = $request->only(['name', 'email', 'role']);
-
-    return view("users.list", compact('users', 'filters'));
+        return view("users.list", compact('users'));
     }
 
     public function edit(Request $request, User $user = null)
     {
-    // Only admin can edit other users, or users can edit their own profile
-    if (Auth::user()->role === 'admin' || Auth::id() === $user->id) {
-        $user = $user ?? new User();
-        return view("users.edit", compact('user'));
-    }
-    return redirect()->route('home')->with('error', 'You do not have permission to edit this user.');
+        // Only admin can edit other users, or users can edit their own profile
+        if (Auth::user()->role === 'admin' || (Auth::id() === $user?->id)) {
+            $user = $user ?? new User(); // Create a new User instance if no user is provided
+            $roles = Role::all(); // Get all roles
+
+            return view("users.edit", compact('user', 'roles'));
+        }
+
+        return redirect()->route('users_list')->with('error', 'You do not have permission to edit this user.');
     }
 
     public function save(Request $request, User $user = null)
     {
-    $this->validate($request, [
-        'email' => ['required', 'string', 'max:32'],
-        'name' => ['required', 'string', 'max:128'],
-        'password' => ['required', 'string', 'max:256'],
-        'role' => ['required', 'string', 'in:user,admin'], // Ensure role is either 'user' or 'admin'
-    ]);
+        $this->validate($request, [
+            'email' => ['required', 'string', 'max:32'],
+            'name' => ['required', 'string', 'max:128'],
+            'password' => ['required', 'string', 'max:256'],
+            'role' => ['required', 'string', 'in:user,admin'], // Ensure role is either 'user' or 'admin'
+        ]);
 
-    // Only admin can save other users, or users can save their own profile
-    if (Auth::user()->role === 'admin' || Auth::id() === $user->id) {
-        $user = $user ?? new User();
-        $user->fill($request->all());
-        $user->save();
-        return redirect()->route('users_list');
-    }
-    return redirect()->route('home')->with('error', 'You do not have permission to save this user.');
+        // Only admin can save other users, or users can save their own profile
+        if (Auth::user()->role === 'admin' || Auth::id() === $user->id) {
+            $user = $user ?? new User();
+            $user->fill($request->all());
+            $user->password = bcrypt($request->password); // Hash the password
+            $user->save();
+            $user->syncRoles($request->role); // Sync roles
+
+            return redirect()->route('users_list')->with('success', 'User saved successfully.');
+        }
+        return redirect()->route('users_list')->with('error', 'You do not have permission to save this user.');
     }
 
     public function delete(Request $request, User $user)
@@ -100,18 +96,19 @@ class UsersController extends Controller
             'name' => ['required', 'string', 'min:5'],
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'confirmed', Password::min(5)->numbers()->letters()->mixedCase()->symbols()],
-            'role' => ['required', 'in:user,admin'],
         ]);
 
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        $user->role = $request->role;
         $user->save();
 
-        // Redirect to home
-        return redirect('/')->with('success', 'Registration successful!');
+        $user->assignRole('customer'); // Automatically assign "Customer" role
+
+        Auth::login($user);
+
+        return redirect()->route('home')->with('success', 'Registration successful!');
     }
     
     public function login(Request $request) 
@@ -136,11 +133,25 @@ class UsersController extends Controller
         return redirect('/');
     }
 
-    public function profile()
+    public function profile(Request $request, User $user = null)
     {
-        // Get the authenticated user
-        $user = Auth::user();
-        return view('users.profile', compact('user'));
+        $user = $user ?? auth()->user();
+
+        if (auth()->id() != $user->id && !auth()->user()->hasPermissionTo('show_users')) {
+            abort(401, 'Unauthorized');
+        }
+
+        $permissions = [];
+        foreach($user->permissions as $permission) {
+            $permissions[] = $permission;
+        }
+        foreach($user->roles as $role) {
+            foreach($role->permissions as $permission) {
+                $permissions[] = $permission;
+            }
+        }
+
+        return view('users.profile', compact('user', 'permissions'));
     }
    
   
@@ -169,4 +180,30 @@ class UsersController extends Controller
     return redirect()->back()->with('success', 'Password updated successfully!');
     }
 
-}   
+    public function purchases()
+    {
+        $user = auth()->user();
+        $purchases = $user->purchases()->with('product')->get();
+
+        return view('users.purchases', compact('purchases'));
+    }
+
+    public function customers()
+    {
+        $customers = User::role('customer')->get();
+        return view('users.customers', compact('customers'));
+    }
+
+    public function addCredit(Request $request, User $user)
+    {
+        $this->validate($request, [
+            'credit' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $user->credit += $request->credit;
+        $user->save();
+
+        return redirect()->route('users_customers')->with('success', 'Credit added successfully.');
+    }
+
+}

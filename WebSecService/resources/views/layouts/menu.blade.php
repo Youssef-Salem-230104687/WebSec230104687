@@ -13,55 +13,27 @@
 <ul class="navbar-nav">
 
  <li class="nav-item">
- <a class="nav-link" href="./">Home</a>
- </li>
- 
- <!-- <li class="nav-item">
- <a class="nav-link" href="./even">Even Numbers</a>
+ <a class="nav-link" href="{{ route('home') }}">Home</a>
  </li>
 
  <li class="nav-item">
- <a class="nav-link" href="./prime">Prime Numbers</a>
+ <a class="nav-link" href="{{ route('products_list') }}">Products</a>
  </li>
 
  <li class="nav-item">
- <a class="nav-link" href="./multable">Multiplication Table</a>
- </li> -->
-
- <!-- <li class="nav-item">
- <a class="nav-link" href="./MiniTest"> MiniTest</a>
+ <a class="nav-link" href="{{ route('users_list') }}">Users</a>
  </li>
 
  <li class="nav-item">
- <a class="nav-link" href="./Transcript">Transcript</a>
- </li>
-
- <li class="nav-item">
- <a class="nav-link" href="./Products"> Products Page</a>
- </li> -->
-
- <!-- <li class="nav-item">
- <a class="nav-link" href="./Calculator">Calculator </a>
- </li> -->
-
- <li class="nav-item">
- <a class="nav-link" href="./products"> Products </a>
- </li>
-
- <li class="nav-item">
- <a class="nav-link" href="./users"> Users </a>
- </li>
-
- <li class="nav-item">
-    <a class="nav-link" href="./grades">Grades</a>
+    <a class="nav-link" href="{{ route('grades_list') }}">Grades</a>
  </li>
         
  <li class="nav-item">
-    <a class="nav-link" href="./questions">MCQ Exam</a>
+    <a class="nav-link" href="{{ route('questions_list') }}">MCQ Exam</a>
  </li>
 
  <li class="nav-item">
-                <a class="nav-link" href="{{ route('questions_exam') }}">Start Exam</a>
+    <a class="nav-link" href="{{ route('questions_exam') }}">Start Exam</a>
  </li>
 
  @if(session('score'))
@@ -70,56 +42,49 @@
  </li>
  @endif
 
- 
- 
+ @auth
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('profile') }}">{{ auth()->user()->name }}</a>
+    </li>
 
-    <!-- @auth
-    <li class="nav-item"><a class="nav-link">{{auth()->user()->name}}</a></li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('do_logout') }}">Logout</a>
+    </li>
 
-    <li class="nav-item"><a class="nav-link" href="{{route('do_logout')}}">Logout</a></li>
-    @else
-    <li class="nav-item"><a class="nav-link" href="{{route('login')}}">Login</a></li>
-    <li class="nav-item"><a class="nav-link" href="{{route('register')}}">Register</a></li>
-    @endauth -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('books.create') }}">Add Book</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('books.index') }}">View Books</a>
+    </li>
 
-            @auth
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('profile') }}">{{ auth()->user()->name }}</a>
-                </li>
+    @can('manage_roles')
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('permissions_list') }}">Permissions Management</a>
+        </li>
+    @endcan
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('do_logout') }}">Logout</a>
-                </li>
+    @can('manage_roles')
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('roles_list') }}">Roles Management</a>
+        </li>
+    @endcan
 
-                <li class="nav-item">
-                        <a class="nav-link" href="{{ route('books.create') }}">Add Book</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('books.index') }}">View Books</a>
-                    </li>
-
-            @else
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">Login</a>
-                </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('register') }}">Register</a>
-                </li>
-            @endauth
-
-
-
-            
+@else
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('login') }}">Login</a>
+    </li>
     
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('register') }}">Register</a>
+    </li>
+@endauth
+
 </ul>
-
-
 
 </div>
 
 </nav>
-
 
 </body>
 </html>
