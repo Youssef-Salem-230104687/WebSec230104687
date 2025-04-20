@@ -18,6 +18,13 @@ class VerificationController extends Controller
 
         return back()->with('message', 'Verification link sent!');
     }
+
+    public function show(Request $request)
+    {
+        return view('auth.verify');
+    }
+
+    
 }
 
 ?>

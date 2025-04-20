@@ -145,9 +145,13 @@ Route::middleware('auth')->group(function () {
 
 
     // Verification code routes
+    Auth::routes(['verify' => true]);
     Route::get('verification/code', function () {
         return view('auth.verification_code_form');
     })->name('verification.code.form');
+    Route::get('/email/verify', [VerificationController::class, 'show'])
+    ->middleware('auth')
+    ->name('verification.notice');
 
     Route::post('verification/code', [UsersController::class, 'verifyCode'])->name('verification.code.submit');
     Route::post('verification/resend', [UsersController::class, 'resendCode'])->name('verification.resend');

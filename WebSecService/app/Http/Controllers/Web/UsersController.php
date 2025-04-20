@@ -182,7 +182,7 @@ public function doRegister(Request $request)
     $user->name = $request->name;
     $user->email = $request->email;
     $user->password = bcrypt($request->password);
-    $user->role = $request->role;
+    // $user->role = $request->role;
     $user->security_question = $request->security_question;
     $user->security_answer = bcrypt($request->security_answer); // Hash the security answer
     $user->verification_code = Str::random(6); // Generate a 6-digit code
@@ -297,7 +297,7 @@ public function verifyCode(Request $request)
     if ($user->verification_code === $request->code && $user->verification_code_expires_at > now()) {
         $user->email_verified_at = now();
         $user->verification_code = null;
-        $user->verification_code_expires_at = null;
+        $user->verificat1ion_code_expires_at = null;
         $user->save();
 
         return redirect()->route('home')->with('success', 'Email verified successfully!');

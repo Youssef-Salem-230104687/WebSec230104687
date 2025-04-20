@@ -67,5 +67,6 @@
   <div class="form-group mb-2">
     <button type="submit" class="btn btn-primary">Register</button>
   </div>
+
 </form>
 @endsection
