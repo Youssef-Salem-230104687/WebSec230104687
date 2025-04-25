@@ -133,11 +133,13 @@ Route::delete('/roles/delete/{role}', [RolesController::class, 'delete'])->name(
 
 // Authentication routes
 Route::middleware('guest')->group(function () {
-    Route::get('register', [UsersController::class, 'register'])->name('register');
-    Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
-    Route::get('login', [UsersController::class, 'login'])->name('login');
-    Route::post('login', [UsersController::class, 'doLogin'])->name('do_login');
+    Route::get('/login', [UsersController::class, 'login'])->name('login');
+    Route::post('/login', [UsersController::class, 'doLogin'])->name('do_login');
+    Route::get('/register', [UsersController::class, 'register'])->name('register');
+    Route::post('/register', [UsersController::class, 'doRegister'])->name('do_register');
 });
+Route::get('/login', [UsersController::class, 'login'])->name('login');
+Route::post('/login', [UsersController::class, 'doLogin'])->name('do_login');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {

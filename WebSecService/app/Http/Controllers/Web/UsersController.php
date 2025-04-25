@@ -18,9 +18,6 @@ use App\Mail\VerificationCodeMail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Validation\Rule;
 
-
-
-
 class UsersController extends Controller
 {
     use ValidatesRequests;
@@ -208,14 +205,24 @@ public function login(Request $request)
 
 public function doLogin(Request $request) 
 {
-
-        if (!Auth::attempt(['email'=> $request->email, 'password'=> $request->password]))
-        {
-            return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
-        }
-         $user = User::where('email', $request->email)->first();
-         Auth::setUser($user);
-        return redirect('/')->with('success' , 'Login Successful!');
+    \Log::info('Login attempt for: ' . $request->email);
+    
+    if (!Auth::attempt(['email'=> $request->email, 'password'=> $request->password])) {
+        \Log::info('Authentication failed');
+        return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
+    }
+    
+    $user = Auth::user();
+    \Log::info('User authenticated: ' . $user->id);
+    
+    if(!$user->email_verified_at){
+        \Log::info('Email not verified, logging out');
+        Auth::logout();
+        return redirect()->back()->withInput($request->input())->withErrors('Your email is not verified.');
+    }
+    
+    \Log::info('Login successful, redirecting to home');
+    return redirect('/')->with('success', 'Login Successful!');
 }
    
 
