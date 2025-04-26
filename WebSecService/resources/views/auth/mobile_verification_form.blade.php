@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.master')
 @section('title', 'Mobile Verification')
 @section('content')
     <h1>Enter Verification Code</h1>

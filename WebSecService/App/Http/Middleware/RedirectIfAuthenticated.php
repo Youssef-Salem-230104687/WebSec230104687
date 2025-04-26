@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use App\Providers\RouteServiceProvider;
 
 class RedirectIfAuthenticated
 {
@@ -13,9 +14,11 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                // Add debug logging
-                \Log::info('Redirecting authenticated user from: ' . $request->path());
-                return redirect('/'); // Redirect authenticated users to home
+                // Never redirect to login
+                if ($request->is('login') || $request->is('register')) {
+                    return redirect('/');
+                }
+                return redirect(RouteServiceProvider::HOME);
             }
         }
 

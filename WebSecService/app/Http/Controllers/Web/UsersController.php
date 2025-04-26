@@ -26,7 +26,7 @@ class UsersController extends Controller
 public function list(Request $request)
 {
     // Authorization check
-    if (!auth()->user()->can('show_users')) {
+    if (!auth()->user()->hasPermissionTo('show_users')) {
         abort(403);
     }
 
@@ -215,6 +215,8 @@ public function doLogin(Request $request)
     $user = Auth::user();
     \Log::info('User authenticated: ' . $user->id);
     
+    // $user = User::where('email', $request->email)->first();
+
     if(!$user->email_verified_at){
         \Log::info('Email not verified, logging out');
         Auth::logout();
@@ -354,5 +356,38 @@ public function verifyLink($token)
     return back()->with('success', 'A new verification code has been sent to your email.');
 }
 
+public function redirectToGoogle()
+{
+
+    return \Socialite::driver('google')->redirect();
+}
+
+public function handleGoogleCallback() {
+    try {
+        $googleUser = \Socialite::driver('google')->user();
+        // $user = User::where('email', $googleUser->getEmail())->first();
+
+        
+            // If the user doesn't exist, create a new one
+            $user = User::updateOrCreate([
+                'google_id' => $googleUser->id(),
+            ], [
+                'name' => $googleUser->name(),
+                'email' => $googleUser->email(),
+                'google_token'=> $googleUser->token(),
+                'google_refresh_token'=> $googleUser->refreshToken(),
+
+            ]);
+        
+
+        Auth::login($user);
+
+        return redirect('/')->with('success', 'Login Successful!');
+
+    } catch (\Exception $e) {
+        return redirect('/')->with('error', 'Failed to login with Google: ' . $e->getMessage());
+    }
+   
+    }
 
 }

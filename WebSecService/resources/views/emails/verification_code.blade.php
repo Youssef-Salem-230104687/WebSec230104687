@@ -1,5 +1,5 @@
 <!-- resources/views/emails/verification_code.blade.php -->
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('content')
     <h1>Your Verification Code</h1>

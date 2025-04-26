@@ -131,20 +131,17 @@ Route::get('/roles/edit/{role?}', [RolesController::class, 'edit'])->name('roles
 Route::match(['post', 'put'], '/roles/save/{role?}', [RolesController::class, 'save'])->name('roles_save');
 Route::delete('/roles/delete/{role}', [RolesController::class, 'delete'])->name('roles_delete');
 
-// Authentication routes
-Route::middleware('guest')->group(function () {
+// Public routes (guest only)
+// Route::middleware('guest')->group(function () {
     Route::get('/login', [UsersController::class, 'login'])->name('login');
     Route::post('/login', [UsersController::class, 'doLogin'])->name('do_login');
     Route::get('/register', [UsersController::class, 'register'])->name('register');
     Route::post('/register', [UsersController::class, 'doRegister'])->name('do_register');
-});
-Route::get('/login', [UsersController::class, 'login'])->name('login');
-Route::post('/login', [UsersController::class, 'doLogin'])->name('do_login');
+// });
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
     Route::get('logout', [UsersController::class, 'doLogout'])->name('do_logout');
-
 
     // Verification code routes
     Auth::routes(['verify' => true]);
@@ -202,3 +199,8 @@ Route::get('/get-security-question', function (Request $request) {
         'security_question' => $user ? $user->security_question : null,
     ]);
 });
+
+Route::get('/auth/google', 
+[UsersController::class, 'redirectToGoogle'])->name('login_with_google');
+ Route::get('/auth/google/callback', 
+[UsersController::class, 'handleGoogleCallback']);

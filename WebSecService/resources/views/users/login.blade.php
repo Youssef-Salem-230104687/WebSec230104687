@@ -29,6 +29,11 @@
     <a href="{{ route('password.request') }}">Forgot Password?</a>
   </div>
 
+  <div class= "form-group mb-2">
+    <button type="submit" class="btn btn-primary">Login</button>
+    <a href="{{route('login_with_google')}}" class="btn btn-danger">Login with Google</a>  
+  </div>
+
 </form>
 
 @endsection
