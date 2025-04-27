@@ -21,7 +21,7 @@
             </div>
 
             <div class="col col-sm-2">
-                <input name="keywords" type="text" class="form-control" placeholder="Search Keywords" value="{{ request()->keywords }}" />
+                <input name="keywords" type="text" class="form-control" placeholder="Search Keywords" value="{{request()->keywords}}" />
             </div>
             <div class="col col-sm-2">
                 <input name="min_price" type="number" class="form-control" placeholder="Min Price" value="{{ request()->min_price }}" />
@@ -51,6 +51,14 @@
             </div>
         </div>
     </form>
+
+    <!-- @if(!empty(request()->keywords))
+        <div class='card mt-2'>
+            <div class='card-body'>
+                view search results: <span>{{!! request()->keywords !!}}</span>
+            </div>
+        </div>
+    @endif -->
 
     <!-- Product Listing -->
     @foreach($products as $product)

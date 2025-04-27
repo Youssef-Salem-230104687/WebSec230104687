@@ -204,3 +204,21 @@ Route::get('/auth/google',
 [UsersController::class, 'redirectToGoogle'])->name('login_with_google');
  Route::get('/auth/google/callback', 
 [UsersController::class, 'handleGoogleCallback']);
+
+
+// Route::get("/sqli", function(Request $request){
+//     $table = $request->query('table');
+//     DB::unprepared("DROP TABLE $table");
+//     return redirect('/');
+// });
+
+
+// Route::get("collect", function(Request $request){
+//     $name = $request->query('name');
+//     $credit = $request->query('credit');    
+//     return response('data collected', 200)
+    
+//     ->header("Access-Control-Allow-Origin", '*')
+//     ->header("Access-Control-Allow-Methods", 'GET, POST, OPTIONS')
+//     ->header("Access-Control-Allow-Headers", 'Content-Type, X-Request-With');
+// });
