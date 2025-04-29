@@ -226,7 +226,7 @@ public function doLogin(Request $request)
     \Log::info('Login successful, redirecting to home');
     return redirect('/')->with('success', 'Login Successful!');
 }
-   
+
 
 
 public function doLogout(Request $request) 

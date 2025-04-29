@@ -52,13 +52,13 @@
         </div>
     </form>
 
-    <!-- @if(!empty(request()->keywords))
+    @if(!empty(request()->keywords))
         <div class='card mt-2'>
             <div class='card-body'>
                 view search results: <span>{{!! request()->keywords !!}}</span>
             </div>
         </div>
-    @endif -->
+    @endif
 
     <!-- Product Listing -->
     @foreach($products as $product)
@@ -66,7 +66,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col col-sm-12 col-lg-4">
-                        <img src="{{ asset('images/' . $product->photo) }}" class="img-thumbnail" alt="{{ $product->name }}" width="100%">
+                        <img src="{{asset("images/$product->photo")}}" class="img-thumbnail" alt="{{ $product->name }}" width="100%">
                     </div>
                     
                     <div class="col col-sm-12 col-lg-8 mt-3">

