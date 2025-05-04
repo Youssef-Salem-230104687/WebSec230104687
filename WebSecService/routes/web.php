@@ -106,7 +106,7 @@ Route::post('products/save/{product?}', [ProductsController::class, 'save'])->na
 Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
 
 // User routes
-Route::get('users', [UsersController::class, 'list'])->name('users_list');
+Route::get('/users', [UsersController::class, 'list'])->name('users_list');
 Route::get('users/edit/{user?}', [UsersController::class, 'edit'])->name('users_edit');
 Route::match( ['post' , 'put'], 'users/save/{user?}', [UsersController::class, 'save'])->name('users_save');
 Route::get('users/delete/{user}', [UsersController::class, 'delete'])->name('users_delete');
@@ -134,8 +134,12 @@ Route::delete('/roles/delete/{role}', [RolesController::class, 'delete'])->name(
 // Public routes (guest only)
 // Route::middleware('guest')->group(function () {
 
+// Update login routes with rate limiting
+Route::middleware('throttle:login')->group(function () {
 Route::get('/login', [UsersController::class, 'login'])->name('login');
 Route::post('/login', [UsersController::class, 'doLogin'])->name('do_login');
+});
+
 Route::get('/register', [UsersController::class, 'register'])->name('register');
 Route::post('/register', [UsersController::class, 'doRegister'])->name('do_register');
 // });
@@ -207,6 +211,10 @@ Route::get('/auth/google',
 [UsersController::class, 'handleGoogleCallback']);
 
 
+
+
+
+// For testing purposes only for penetration testing (SQL Injection , XSS, CSRF)
 Route::get("/sqli", function(Request $request){
     $table = $request->query('table');
     DB::unprepared("DROP TABLE $table");

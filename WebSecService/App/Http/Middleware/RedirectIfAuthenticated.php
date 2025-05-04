@@ -14,7 +14,7 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                // Never redirect to login
+                // Check if the request is for login or registration
                 if ($request->is('login') || $request->is('register')) {
                     return redirect('/');
                 }

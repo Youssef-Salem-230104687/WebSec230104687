@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationCodeMail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\RateLimiter;
 
 class UsersController extends Controller
 {
@@ -205,28 +206,62 @@ public function login(Request $request)
 
 public function doLogin(Request $request) 
 {
-    \Log::info('Login attempt for: ' . $request->email);
+
+      // TEMPORARY: Bypass security for testing
+      if (app()->environment('local')) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::user();
+
+     // Validate reCAPTCHA
+     $this->validate($request, [
+        'g-recaptcha-response' => 'required|captcha'
+    ], [
+        'g-recaptcha-response.required' => 'Please complete the reCAPTCHA verification.',
+        'g-recaptcha-response.captcha' => 'reCAPTCHA verification failed. Please try again.'
+    ]);
     
+    // Rate limiting check (keep your existing code)
+    if (RateLimiter::tooManyAttempts('login-attempts:'.$request->ip(), 5)) {
+        $seconds = RateLimiter::availableIn('login-attempts:'.$request->ip());
+        return back()->withErrors([
+            'email' => 'Too many login attempts. Please try again in '.$seconds.' seconds.',
+        ]);
+    }
+
+     // Enhanced rate limiter that combines IP and email
+     $key = 'login-attempts:' . $request->ip() . ':' . $request->email;
+     if (RateLimiter::tooManyAttempts($key, 5)) {
+         $seconds = RateLimiter::availableIn($key);
+         return back()->withErrors([
+             'email' => 'Too many login attempts. Please try again in '.$seconds.' seconds.',
+         ]);
+     }
+
     if (!Auth::attempt(['email'=> $request->email, 'password'=> $request->password])) {
-        \Log::info('Authentication failed');
+        RateLimiter::hit($key, 60*10); // Keep the throttle for 10 minutes
         return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
     }
     
+    // On successful login, clear the rate limiter
+    RateLimiter::clear($key);
+
     $user = Auth::user();
-    \Log::info('User authenticated: ' . $user->id);
+    
     
     // $user = User::where('email', $request->email)->first();
 
     if(!$user->email_verified_at){
-        \Log::info('Email not verified, logging out');
+        
         Auth::logout();
         return redirect()->back()->withInput($request->input())->withErrors('Your email is not verified.');
     }
     
-    \Log::info('Login successful, redirecting to home');
+    
     return redirect('/')->with('success', 'Login Successful!');
 }
-
+}
+}
+      
 
 
 public function doLogout(Request $request) 
