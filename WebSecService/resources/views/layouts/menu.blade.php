@@ -121,6 +121,15 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ route('register') }}">Register</a>
     </li>
+
+     <li class="nav-item">
+        <a class="nav-link" href="{{route('cryptography')}}">Cryptography</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{route('webcrypto')}}"> Web Crypto </a>
+    </li>
+    
     @endauth
 
     @can('manage_roles')

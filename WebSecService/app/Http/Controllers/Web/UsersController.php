@@ -368,8 +368,6 @@ public function verifyLink($token)
      return redirect()->route('home')->with('error', 'Invalid or expired verification link.');
 }
 
-
-
     public function resendCode(Request $request)
 {
     // Ensure the user is authenticated
